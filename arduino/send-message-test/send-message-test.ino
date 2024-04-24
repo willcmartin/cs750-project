@@ -64,6 +64,7 @@ void nodeA() {
   // Serial.println(CAN.readTEC());
     CAN.beginPacket(0x12);  //sets the ID and clears the transmit buffer
     // Oscilloscope: Sent 0b10110100
+    // CAN.write(0b10110100);
     CAN.write(0b10110100);
     CAN.write(0b10110100);
     CAN.write(0b10110100);
@@ -116,7 +117,7 @@ void nodeA() {
 
   //   // Serial.println("done");
   // }
-  delay(10); // Pre-oscilloscope this was 500
+  delay(0.5); // Pre-oscilloscope this was 500
 }
 
 // Node B listens for the message from Node A and turns on the LED
