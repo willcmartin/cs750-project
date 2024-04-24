@@ -4,6 +4,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split 
 import torch.nn as nn 
 from torchinfo import summary 
+import numpy as np
 
 # source: https://www.geeksforgeeks.org/multinomial-logistic-regression-with-pytorch/
 
@@ -17,12 +18,23 @@ class LogisticRegression(nn.Module):
         out = nn.functional.softmax(out, dim=1) 
         return out 
   
-# Load the Iris dataset 
-iris = load_iris() 
+dataA = np.loadtxt('data/A_features.txt')
+dataB = np.loadtxt('data/B_features.txt')
+dataC = np.loadtxt('data/C_features.txt')
+
+targetA = np.full(dataA.shape[0], 0)
+targetB = np.full(dataB.shape[0], 1)
+targetC = np.full(dataC.shape[0], 2)
+
+all_data = np.concatenate((dataA, dataB, dataC), axis=0)
+all_target = np.concatenate((targetA, targetB, targetC), axis=0)
   
 # Convert the data to PyTorch tensors 
-X = torch.tensor(iris.data, dtype=torch.float32) 
-y = torch.tensor(iris.target, dtype=torch.long) 
+X = torch.tensor(all_data, dtype=torch.float32) 
+y = torch.tensor(all_target, dtype=torch.long) 
+
+print(X)
+print(y)
   
 # Normalize the input data 
 mean = torch.mean(X, dim=0) 
@@ -42,13 +54,13 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # Define the model 
-model = LogisticRegression(input_size=4, num_classes=3) 
+model = LogisticRegression(input_size=16, num_classes=3) 
   
 # Check for cuda 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu') 
 # Move the model to the device 
 model = model.to(device) 
-summary(model, input_size=(16,4))
+# summary(model, input_size=(16,3))
 
 # Define the loss function and optimizer 
 criterion = nn.CrossEntropyLoss() 
